@@ -9,7 +9,6 @@ public with sharing class rpaDao {
             Schema.DescribeFieldResult objFieldDescribe = Account.Department__c.getDescribe();
             List<Schema.PicklistEntry> lstPickListValues = objFieldDescribe.getPickListValues();
             for (Schema.PicklistEntry objPickList : lstPickListValues) {
-                System.debug('Value = ' +objPickList.getValue() +' , Label = ' +objPickList.getLabel());
                 picklistValue.add(objPickList.getValue());
             }
             return picklistValue;
@@ -20,13 +19,14 @@ public with sharing class rpaDao {
     }
 
     @AuraEnabled(cacheable=true)
-    public static List<RPA__c> getListRpa(String dept){
+    public static List<RPA__c> getListRpa(String deptName){
         try {
             Date lastTwoWeek = System.Today() - 14;  
-            List<RPA__c> listRpa = [SELECT Name, TitleURL__c, SummaryURL__c, ImageURL__c, CreatedDate__c
+            List<RPA__c> listRpa = [SELECT Name, TitleURL__c, SummaryURL__c, ImageURL__c, 
+                                    Customer_Card__c, CreatedDate__c, Customer_Card__r.Department__c 
                                     FROM RPA__c 
                                     WHERE CreatedDate__c >= :lastTwoWeek 
-                                    AND Cusomer_Card__c LIKE :dept
+                                    AND Customer_Card__r.Department__c LIKE :deptName
                                     ORDER BY CreatedDate__c DESC LIMIT :PAGE_SIZE];
             return listRpa;
         }
@@ -37,16 +37,21 @@ public with sharing class rpaDao {
     }
 
     @AuraEnabled(cacheable=true)
-    public static NewsPaginationWrapper getListRpaByPageNumber(Integer pageNumber){
+    public static NewsPaginationWrapper getListRpaByPageNumber(Integer pageNumber, String deptName){
         try {
             NewsPaginationWrapper wrapper = new NewsPaginationWrapper();
+            System.debug('dept param: ' + deptName);
             List<Integer> pages = new List<Integer>();
-            Integer offset = ((pageNumber - 1) * PAGE_SIZE) + 3;
-            String queryCount = 'SElECT COUNT() FROM RPA__c';
-            String query = 'SELECT Id, Name, TitleURL__c, SummaryURL__c, ImageURL__c, CreatedDate__c ' + 
-                            'FROM RPA__c ORDER BY CreatedDate__c DESC LIMIT 5 OFFSET :offset';
+            Integer offset = ((pageNumber - 1) * PAGE_SIZE) + 5;
+            String queryCount = 'SElECT COUNT() FROM RPA__c WHERE Customer_Card__r.Department__c LIKE :deptName OFFSET 5';
+            String query = 'SELECT Id, Name, TitleURL__c, SummaryURL__c, ImageURL__c, CreatedDate__c,  Customer_Card__r.Department__c ' + 
+                            'FROM RPA__c WHERE Customer_Card__r.Department__c LIKE :deptName ' +
+                            'ORDER BY CreatedDate__c DESC LIMIT 5 OFFSET :offset';
+            System.debug('query: ' + query);
             List<RPA__c> listRpa = Database.query(query);
             Integer totalRecords = Database.countQuery(queryCount);
+            System.debug('list: ' + listRpa);
+            System.debug('count: ' + totalRecords);
             wrapper.listNews = listRpa;
             wrapper.currentPage = pageNumber;
             wrapper.totalPages = (Math.ceil(totalRecords / PAGE_SIZE)).intValue();

@@ -31,18 +31,19 @@ export default class MarketIntelligence extends LightningElement {
 
     // get navbar data
     @wire (getDepartmentPicklist) deptPicklist ({error, data}) {
-        if (data) {
-            console.log('picklist data: ', data);
-        }
-        if (error) {
-            console.log('err: ', error);
-        }
+        // if (data) {
+        //     console.log('picklist data: ', data);
+        // }
+        // if (error) {
+        //     console.log('err: ', error);
+        // }
     }
 
     // get carousel data
-    @wire(getListRpa) listRpa({error, data}) {
+    @wire(getListRpa, { deptName: '$currentDept' }) 
+    listRpa({error, data}) {
         if(data) {
-            console.log('data: ', data);
+            // console.log('data: ', data);
             this.rpaNews = data.map((item, index) => {
                 return index === 0 ? {
                     ...item,
@@ -56,7 +57,7 @@ export default class MarketIntelligence extends LightningElement {
                     dotClasses: DOT_HIDDEN_CLASSES
                 }
             })
-            console.log('rpaNews: ', this.rpaNews);
+            // console.log('rpaNews: ', this.rpaNews);
         }
         if (error) {
             console.log('err: ', error);
@@ -64,20 +65,21 @@ export default class MarketIntelligence extends LightningElement {
     }
 
     // get pagination data
-    @wire(getListRpaByPageNumber, { pageNumber : '$currentPage'})
+    @wire(getListRpaByPageNumber, { pageNumber : '$currentPage', deptName: '$currentDept'})
     listTest ({error, data})  {
-        if(data) {
-            console.log(data);
-        }
-        if (error) {
-            console.log('err: ', error);
-        }
+        // if(data) {
+        //     console.log('paging data: ', data);
+        // }
+        // if (error) {
+        //     console.log('err: ', error);
+        // }
     } 
 
-    connectedCallback() {
-        this.switchDept(this.currentDept);
-        this.renewInterval();
-        this.getListRpaByPageNumber(this.currentPage);
+    async connectedCallback() {
+        await this.switchDept(this.currentDept);
+        await this.getListRpaByPageNumber(this.currentPage, this.currentDept);
+        await this.renewInterval();
+        console.log('check pageData: ', this.pageData);
     }
 
     /**
@@ -85,7 +87,7 @@ export default class MarketIntelligence extends LightningElement {
     *  @param currentDept name of department
     *  @return list departments with additional attribute
     **/
-    async switchDept(currentDept) {
+    switchDept(currentDept) {
         getDepartmentPicklist()
         .then(data => {
             this.listDept = data.map(item => {
@@ -97,6 +99,8 @@ export default class MarketIntelligence extends LightningElement {
                     btnClasses: BTN_INACTIVE_CLASSES
                 }
             });
+            this.getListRpaByPageNumber(1, currentDept);
+            this.renewInterval();
         })
         .catch(error => {
             this.error = error;
@@ -109,10 +113,11 @@ export default class MarketIntelligence extends LightningElement {
     *  @param pageNumber current page number
     *  @return list news and pagination data
     **/
-    async getListRpaByPageNumber(pageNumber) {
+    getListRpaByPageNumber(pageNumber, currentDept) {
         console.log('page: ', pageNumber);
         getListRpaByPageNumber({
-            pageNumber: pageNumber
+            pageNumber: pageNumber,
+            deptName: currentDept
         })
         .then(result => {
             console.log('log result: ', result);
@@ -120,6 +125,7 @@ export default class MarketIntelligence extends LightningElement {
                 this.pageData = result.listNews;
                 this.totalPages = result.totalPages;
                 this.currentPage = result.currentPage;
+                this.currentDept = currentDept;
                 this.pagesArray = result.pagesArray.map(item => {
                     return this.currentPage === item ? {
                         value: item,
@@ -209,14 +215,14 @@ export default class MarketIntelligence extends LightningElement {
 
     // pagination button handler
     prevPageHandler() {
-        this.getListRpaByPageNumber(this.currentPage - 1);
+        this.getListRpaByPageNumber(this.currentPage - 1, this.currentDept);
     }
     nextPageHandler() {
-        this.getListRpaByPageNumber(this.currentPage + 1);
+        this.getListRpaByPageNumber(this.currentPage + 1, this.currentDept);
     }
     handleOnClickPageButton(event) {
         this.currentPage = event.currentTarget.dataset.key;
-        this.getListRpaByPageNumber(event.currentTarget.dataset.key);
+        this.getListRpaByPageNumber(event.currentTarget.dataset.key, this.currentDept);
     }
 
 }
