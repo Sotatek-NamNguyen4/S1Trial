@@ -1,0 +1,86 @@
+<template>
+    <lightning-card title="MarketIntelligence">
+        <div class="slds-grid slds-gutters">
+            <div class="slds-col slds-size_6-of-6">
+                <div class="nav-bar">
+                    <nav class="slds-context-bar">
+                        <template if:true={listDept}>
+                            <template for:each={listDept} for:item="dept">
+                                <button key={dept.Id} class={dept.btnClasses} data-key={dept.value} data-index={dept.index} onclick={handleChangeDept}>{dept.value}</button>
+                            </template>
+                        </template>
+                    </nav>
+                </div>
+                <div class="slds-grid slds-gutters">
+                    <div class="slds-col slds-size_1-of-2">
+                        <div class="slds-box slds-box_x-medium slds-text-align_center slds-m-around_x-small">
+                            <template for:each={rpaNews} for:item="news">
+                                <div class={news.cardClasses} key={news.slideIndex}>
+                                    <div class="slds-carousel__image">
+                                        <a href="#">
+                                            <img src={news.ImageURL__c}  alt="Preview Image" />
+                                        </a>
+                                    </div>
+                                    <div class="slds-carousel__content">
+                                        <a class="slds-carousel__content-title" href="#">{news.TitleURL__c}</a>
+                                        <p class="slds-carousel__content-description">{news.SummaryURL__c}</p><br/>
+                                        <p class="slds-carousel__content-date">{news.CreatedDate__c}</p>
+                                    </div>
+                                </div>
+                            </template>
+                        </div>
+                        <div class="slds-text-align_center slds-p-around_medium">
+                                <template if:true={rpaNews}>
+                                    <template for:each={rpaNews} for:item="news">
+                                        <span key={news.slideIndex} data-id={news.slideIndex} class={news.dotClasses} onclick={handleOnClickCarouselDot}></span>
+                                    </template>
+                                </template>
+                        </div>
+                    </div>
+                    <div class="slds-col slds-size_1-of-2">
+                        <div class="result-table">
+                            <template if:true={pageData}>
+                              <template for:each={pageData} for:item="news">
+                                <article class="news-content" key={news.Id}>
+                                  <a class="news-content-title" href="#">{news.TitleURL__c}</a>
+                                  <p class="news-content-summary">{news.SummaryURL__c}</p>
+                                  <p class="news-content-date">{news.CreatedDate__c}</p>
+                                </article>
+                              </template>
+                            </template>
+                          </div>
+                          <div class="pagination">
+                            <div class="slds-float_right">
+                              <lightning-button-group>
+                                <lightning-button-icon 
+                                  icon-name="utility:left" 
+                                  onclick={prevPageHandler}
+                                  disabled={isDisablePrevBtn}>
+                                </lightning-button-icon>
+                                <template if:true={pagesArray}>
+                                  <template for:each={pagesArray} for:item="page">
+                                      <button key={page.Id} class={page.btnClasses} data-key={page.value} onclick={handleOnClickPageButton} >{page.value}</button>
+                                  </template>
+                                </template>
+                                <lightning-button-icon 
+                                  icon-name="utility:right"  
+                                  onclick={nextPageHandler}
+                                  disabled={isDisableNextBtn}>
+                                </lightning-button-icon>
+                              </lightning-button-group>
+                            </div>
+                          </div>
+                    </div>
+                </div>
+            </div>
+            <!-- <div class="slds-col slds-size_1-of-6">
+                <form>
+                    <input type="checkbox" >Category Large<br>
+                    <input type="checkbox" >Category Medium<br>
+                    <input type="checkbox" >Category Small<br><br>
+                    <lightning-button label="Apply"></lightning-button>
+                </form>
+            </div> -->
+        </div>
+    </lightning-card>
+</template>
