@@ -1,7 +1,8 @@
-import getDepartmentPicklist from '@salesforce/apex/rpaDao.getDepartmentPicklist';
-import getListRpa from '@salesforce/apex/rpaDao.getListRpa';
-import getListRpaByPageNumber from '@salesforce/apex/rpaDao.getListRpaByPageNumber';
-import { api, LightningElement, track, wire } from 'lwc';
+
+import getDepartmentPicklist from '@salesforce/apex/RpaDao.getDepartmentPicklist';
+import getRpas from '@salesforce/apex/RpaDao.getRpas';
+import getRpasByPageNumber from '@salesforce/apex/RpaDao.getRpasByPageNumber';
+import { LightningElement, track, wire } from 'lwc';
 
 const BTN_ACTIVE_CLASSES = 'slds-button slds-button_brand slds-button_middle';
 const BTN_INACTIVE_CLASSES = 'slds-button slds-button_neutral slds-button_middle';
@@ -31,16 +32,16 @@ export default class MarketIntelligence extends LightningElement {
 
     // get navbar data
     @wire (getDepartmentPicklist) deptPicklist ({error, data}) {
-        // if (data) {
-        //     console.log('picklist data: ', data);
-        // }
-        // if (error) {
-        //     console.log('err: ', error);
-        // }
+        if (data) {
+            console.log('picklist data: ', data);
+        }
+        if (error) {
+            console.log('err: ', error);
+        }
     }
 
     // get carousel data
-    @wire(getListRpa, { deptName: '$currentDept' }) 
+    @wire(getRpas, { deptName: '$currentDept' }) 
     listRpa({error, data}) {
         if(data) {
             // console.log('data: ', data);
@@ -65,14 +66,14 @@ export default class MarketIntelligence extends LightningElement {
     }
 
     // get pagination data
-    @wire(getListRpaByPageNumber, { pageNumber : '$currentPage', deptName: '$currentDept'})
+    @wire(getRpasByPageNumber, { pageNumber : '$currentPage', deptName: '$currentDept'})
     listTest ({error, data})  {
-        // if(data) {
-        //     console.log('paging data: ', data);
-        // }
-        // if (error) {
-        //     console.log('err: ', error);
-        // }
+        if(data) {
+            console.log('paging data: ', data);
+        }
+        if (error) {
+            console.log('err: ', error);
+        }
     } 
 
     async connectedCallback() {

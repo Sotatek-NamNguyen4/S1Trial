@@ -1,7 +1,17 @@
-public with sharing class rpaDao {
-
+/**
+ * class Dao of RPA__c
+ *
+ * @author nam.nguyen4
+ */
+public with sharing class RpaDao {
+    
     static final Integer PAGE_SIZE = 5;
 
+    /**
+     * get Department picklist's values
+     * 
+     * @return List<String> values
+     */
     @AuraEnabled(cacheable=true)
     public static List<String> getDepartmentPicklist(){
         try {
@@ -18,8 +28,13 @@ public with sharing class rpaDao {
         }
     }
 
+    /**
+     * get List 5 recently records of RPA within 2 weeks from now
+     * @param deptName department value
+     * @return List<RPA__c> list records
+     */
     @AuraEnabled(cacheable=true)
-    public static List<RPA__c> getListRpa(String deptName){
+    public static List<RPA__c> getRpas(String deptName){
         try {
             Date lastTwoWeek = System.Today() - 14;  
             List<RPA__c> listRpa = [SELECT Name, TitleURL__c, SummaryURL__c, ImageURL__c, 
@@ -36,8 +51,14 @@ public with sharing class rpaDao {
         }
     }
 
+    /**
+     * get List records of RPA and pagination data
+     * @param deptName department value
+     * @param pageNumber chosen page number
+     * @return pagination data
+     */
     @AuraEnabled(cacheable=true)
-    public static NewsPaginationWrapper getListRpaByPageNumber(Integer pageNumber, String deptName){
+    public static NewsPaginationWrapper getRpasByPageNumber(Integer pageNumber, String deptName){
         try {
             NewsPaginationWrapper wrapper = new NewsPaginationWrapper();
             System.debug('dept param: ' + deptName);
