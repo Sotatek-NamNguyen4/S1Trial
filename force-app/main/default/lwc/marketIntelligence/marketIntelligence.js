@@ -1,7 +1,7 @@
 
 import getDepartmentPicklist from '@salesforce/apex/RpaDao.getDepartmentPicklist';
-import getRpas from '@salesforce/apex/RpaDao.getRpas';
-import getRpasByPageNumber from '@salesforce/apex/RpaDao.getRpasByPageNumber';
+import getRpasByDept from '@salesforce/apex/RpaDao.getRpasByDept';
+import getRpasByPageNumberAndDept from '@salesforce/apex/RpaDao.getRpasByPageNumberAndDept';
 import { LightningElement, track, wire } from 'lwc';
 
 const BTN_ACTIVE_CLASSES = 'slds-button slds-button_brand slds-button_middle';
@@ -41,7 +41,7 @@ export default class MarketIntelligence extends LightningElement {
     }
 
     // get carousel data
-    @wire(getRpas, { deptName: '$currentDept' }) 
+    @wire(getRpasByDept, { deptName: '$currentDept' }) 
     listRpa({error, data}) {
         if(data) {
             // console.log('data: ', data);
@@ -66,7 +66,7 @@ export default class MarketIntelligence extends LightningElement {
     }
 
     // get pagination data
-    @wire(getRpasByPageNumber, { pageNumber : '$currentPage', deptName: '$currentDept'})
+    @wire(getRpasByPageNumberAndDept, { pageNumber : '$currentPage', deptName: '$currentDept'})
     listTest ({error, data})  {
         if(data) {
             console.log('paging data: ', data);
@@ -116,7 +116,7 @@ export default class MarketIntelligence extends LightningElement {
     **/
     getListRpaByPageNumber(pageNumber, currentDept) {
         console.log('page: ', pageNumber);
-        getListRpaByPageNumber({
+        getRpasByPageNumberAndDept({
             pageNumber: pageNumber,
             deptName: currentDept
         })

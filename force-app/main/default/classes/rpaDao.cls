@@ -34,7 +34,7 @@ public with sharing class RpaDao {
      * @return List<RPA__c> list records
      */
     @AuraEnabled(cacheable=true)
-    public static List<RPA__c> getRpas(String deptName){
+    public static List<RPA__c> getRpasByDept(String deptName){
         try {
             Date lastTwoWeek = System.Today() - 14;  
             List<RPA__c> listRpa = [SELECT Name, TitleURL__c, SummaryURL__c, ImageURL__c, 
@@ -42,7 +42,7 @@ public with sharing class RpaDao {
                                     FROM RPA__c 
                                     WHERE CreatedDate__c >= :lastTwoWeek 
                                     AND Customer_Card__r.Department__c LIKE :deptName
-                                    ORDER BY CreatedDate__c DESC LIMIT :PAGE_SIZE];
+                                    ORDER BY CreatedDate__c DESC, Name DESC LIMIT :PAGE_SIZE];
             return listRpa;
         }
         catch (Exception e) {
@@ -58,21 +58,19 @@ public with sharing class RpaDao {
      * @return pagination data
      */
     @AuraEnabled(cacheable=true)
-    public static NewsPaginationWrapper getRpasByPageNumber(Integer pageNumber, String deptName){
+    public static NewsPaginationWrapper getRpasByPageNumberAndDept(Integer pageNumber, String deptName){
         try {
             NewsPaginationWrapper wrapper = new NewsPaginationWrapper();
             System.debug('dept param: ' + deptName);
             List<Integer> pages = new List<Integer>();
-            Integer offset = ((pageNumber - 1) * PAGE_SIZE) + 5;
-            String queryCount = 'SElECT COUNT() FROM RPA__c WHERE Customer_Card__r.Department__c LIKE :deptName OFFSET 5';
+            Integer offset = ((pageNumber - 1) * PAGE_SIZE);
+            String queryCount = 'SElECT COUNT() FROM RPA__c WHERE Customer_Card__r.Department__c LIKE :deptName';
             String query = 'SELECT Id, Name, TitleURL__c, SummaryURL__c, ImageURL__c, CreatedDate__c,  Customer_Card__r.Department__c ' + 
                             'FROM RPA__c WHERE Customer_Card__r.Department__c LIKE :deptName ' +
-                            'ORDER BY CreatedDate__c DESC LIMIT 5 OFFSET :offset';
+                            'ORDER BY CreatedDate__c DESC, Name DESC LIMIT 5 OFFSET :offset';
             System.debug('query: ' + query);
             List<RPA__c> listRpa = Database.query(query);
             Integer totalRecords = Database.countQuery(queryCount);
-            System.debug('list: ' + listRpa);
-            System.debug('count: ' + totalRecords);
             wrapper.listNews = listRpa;
             wrapper.currentPage = pageNumber;
             wrapper.totalPages = (Math.ceil(totalRecords / PAGE_SIZE)).intValue();
