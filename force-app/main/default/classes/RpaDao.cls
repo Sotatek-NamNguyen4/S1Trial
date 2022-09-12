@@ -76,9 +76,19 @@ public with sharing class RpaDao {
             wrapper.totalPages = (Math.ceil(totalRecords / PAGE_SIZE)).intValue();
             System.debug('total pages: ' + wrapper.totalPages);
             if (wrapper.totalPages > 5 && pageNumber > 3) {
-                Integer pageLim = (pageNumber + 2) >= wrapper.totalPages ? wrapper.totalPages : (pageNumber + 2);
-                for (Integer i = (pageNumber - 2); i <= pageLim; i++) {
-                    pages.add(i);
+                if (pageNumber == wrapper.totalPages) {
+                    for (Integer i = (pageNumber - 4); i <= pageNumber; i++) {
+                        pages.add(i);
+                    }
+                } else if (pageNumber == (wrapper.totalPages - 1)) {
+                    for (Integer i = (pageNumber - 3); i <= wrapper.totalPages; i++) {
+                        pages.add(i);
+                    }
+                } else {
+                    Integer pageLim = (pageNumber + 2) >= wrapper.totalPages ? wrapper.totalPages : (pageNumber + 2);
+                    for (Integer i = (pageNumber - 2); i <= pageLim; i++) {
+                        pages.add(i);
+                    }
                 }
             } else if (wrapper.totalPages > 5 && pageNumber <= 3) {
                 for (Integer i = 1; i <= 5; i++) {
