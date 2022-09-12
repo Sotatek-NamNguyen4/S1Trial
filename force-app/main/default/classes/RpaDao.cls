@@ -74,8 +74,20 @@ public with sharing class RpaDao {
             wrapper.listNews = listRpa;
             wrapper.currentPage = pageNumber;
             wrapper.totalPages = (Math.ceil(totalRecords / PAGE_SIZE)).intValue();
-            for (Integer i = 1; i <= wrapper.totalPages; i++) {
-                pages.add(i);
+            System.debug('total pages: ' + wrapper.totalPages);
+            if (wrapper.totalPages > 5 && pageNumber > 3) {
+                Integer pageLim = (pageNumber + 2) >= wrapper.totalPages ? wrapper.totalPages : (pageNumber + 2);
+                for (Integer i = (pageNumber - 2); i <= pageLim; i++) {
+                    pages.add(i);
+                }
+            } else if (wrapper.totalPages > 5 && pageNumber <= 3) {
+                for (Integer i = 1; i <= 5; i++) {
+                    pages.add(i);
+                }
+            } else {
+                for (Integer i = 1; i <= wrapper.totalPages; i++) {
+                    pages.add(i);
+                }
             }
             wrapper.pagesArray = pages;
             return wrapper;
