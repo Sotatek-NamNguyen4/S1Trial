@@ -4,7 +4,10 @@
 .c-custom-carousel {
     padding: auto;
 }
-
+.slds-modal__container {
+    max-width: 80rem !important;
+    width: 80% !important;
+}
 /* carousel css */
 p.slds-carousel__content-date {
     text-align: left; 
@@ -60,8 +63,8 @@ a.slds-carousel__content-title:visited {
 
 /* pagination css */
 .result-table {
-    min-height: 569px;
     margin-right: 10px;
+    margin-left: 10px;
 }
 .pagination {
     margin-right: 10px;
