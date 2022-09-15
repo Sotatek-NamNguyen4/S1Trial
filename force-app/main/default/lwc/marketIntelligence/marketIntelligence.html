@@ -5,8 +5,8 @@
         <div class="search-bar">
           <div class="slds-p-bottom_small slds-p-left_large slds-p-right_large" style="width:40%">
             <lightning-layout>
-              <lightning-layout-item class="slds-p-left_small">
-                <lightning-input type="search" variant="label-hidden" placeholder="Enter keyword" onchange={searchChangeHandler} onkeypress={handleEnter}></lightning-input>
+              <lightning-layout-item class="slds-p-left_small slds-size_4-of-6">
+                <lightning-input class="slds-size_full" type="search" variant="label-hidden" placeholder="Enter keyword" onchange={searchChangeHandler} onkeypress={handleEnter} value={keyword}></lightning-input>
               </lightning-layout-item>
               <lightning-layout-item class="slds-p-left_small">
                 <lightning-button label="Search" onclick={searchHandler} disabled={isDisableSearchBtn}></lightning-button>
@@ -75,8 +75,8 @@
                       <span class="slds-assistive-text">Close</span>
                   </button>
                   <lightning-layout>
-                    <lightning-layout-item class="slds-p-left_small">
-                      <lightning-input type="search" variant="label-hidden" onchange={searchChangeHandler} onkeypress={handleEnter}></lightning-input>
+                    <lightning-layout-item class="slds-p-left_small slds-size_2-of-6">
+                      <lightning-input class="slds-size_full" type="search" variant="label-hidden" onchange={searchChangeHandler} onkeypress={handleEnter} value={keyword}></lightning-input>
                     </lightning-layout-item>
                     <lightning-layout-item class="slds-p-left_small">
                       <lightning-button label="Search" onclick={searchHandler}></lightning-button>

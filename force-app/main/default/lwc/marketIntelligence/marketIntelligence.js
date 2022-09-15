@@ -52,17 +52,6 @@ export default class MarketIntelligence extends LightningElement {
         }
     }
 
-    // get pagination data
-    @wire(getNewsPaginationData, { pageNumber : '$currentPage', deptName: '$currentDept'})
-    listTest ({error, data})  {
-        if(data) {
-            console.log('paging data: ', data);
-        }
-        if (error) {
-            console.log('err: ', error);
-        }
-    } 
-
     async connectedCallback() {
         this.switchDept(this.currentDept);
     }
